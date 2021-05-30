@@ -11,7 +11,7 @@ USERDIR = '/media/daniel/volume-exFa/Musica/Unsorted/complete/'
 SORTEDDIR = '/media/daniel/volume-exFa/Musica/Sorted/'
 KEEP = True
 
-class bcolors:
+class clrs:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
