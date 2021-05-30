@@ -6,6 +6,7 @@ import shutil
 from pathlib import Path
 from io import StringIO
 
+
 USERDIR = '/media/daniel/volume-exFa/Musica/Unsorted/complete/'
 SORTEDDIR = '/media/daniel/volume-exFa/Musica/Sorted/'
 KEEP = True
