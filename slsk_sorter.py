@@ -1,16 +1,25 @@
 # external drives must be mounted beforehand
-import re
 import os
 import sys
-import glob
 import eyed3
 import shutil
 from pathlib import Path
 from io import StringIO
 
-user_dir = '/media/daniel/volume-exFa/Musica/Unsorted/complete/'
-sorted_dir = '/media/daniel/volume-exFa/Musica/Sorted/'
-keep_misc = True
+USERDIR = '/media/daniel/volume-exFa/Musica/Unsorted/complete/'
+SORTEDDIR = '/media/daniel/volume-exFa/Musica/Sorted/'
+KEEP = True
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 # Not used (yet). grabs eyed3 stdout for eyed3.load
 class capturing(list):
@@ -29,7 +38,7 @@ def flatten_list(var):
 
 full_paths = []
 path_nfo = {}
-for root, dirs, files in os.walk(user_dir, topdown=True):
+for root, dirs, files in os.walk(USERDIR, topdown=True):
     path_nfo['root'] = root
     path_nfo['dirs'] = dirs
     path_nfo['files'] = files
@@ -45,15 +54,15 @@ for file in full_paths:
         if audiofile.tag.artist is not None:
             artist = audiofile.tag.artist
             print('Artist - ' + artist)
-            if not os.path.exists(sorted_dir + artist):
-                os.makedirs(sorted_dir + artist)
+            if not os.path.exists(SORTEDDIR + artist):
+                os.makedirs(SORTEDDIR + artist)
         else:
             print('\nWARNING - Artist tag not found\n')
             continue
         if audiofile.tag.album is not None:
             album = audiofile.tag.album
             print('Album - ' + album + '\n')
-            new_dir = Path(sorted_dir + artist + '/' + album + '/')
+            new_dir = Path(SORTEDDIR + artist + '/' + album + '/')
             new_fpath = new_dir / os.path.basename(file)
             if not os.path.exists(new_dir):
                 os.makedirs(new_dir)
@@ -63,7 +72,7 @@ for file in full_paths:
             print('\nWARNING - Album tag not found\n.')
             continue
 
-if keep_misc:
+if KEEP:
     for file in full_paths:
         ext = os.path.splitext(file)[1]
         if not ext or ext != '.mp3':
@@ -74,3 +83,4 @@ if keep_misc:
                     shutil.copyfile(file, new_fpath)
                     print('\nCopied ', os.path.basename(file),
                         'to ', new_fpath)
+
