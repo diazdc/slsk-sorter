@@ -6,21 +6,19 @@ import shutil
 from pathlib import Path
 from io import StringIO
 
-
 USERDIR = '/media/daniel/volume-exFa/Musica/Unsorted/complete/'
 SORTEDDIR = '/media/daniel/volume-exFa/Musica/Sorted/'
 KEEP = True
 
 class clrs:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKCYAN = '\033[96m'
-    OKGREEN = '\033[92m'
+    RED = '\033[31m'
+    BLUE = '\033[94m'
+    CYAN = '\033[96m'
+    GREEN = '\033[92m'
     WARNING = '\033[93m'
     FAIL = '\033[91m'
     ENDC = '\033[0m'
     BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
 
 # Not used (yet). grabs eyed3 stdout for eyed3.load
 class capturing(list):
@@ -54,15 +52,15 @@ for file in full_paths:
             audiofile = eyed3.load(file)
         if audiofile.tag.artist is not None:
             artist = audiofile.tag.artist
-            print('Artist - ' + artist)
+            print('Artist - ' + f'{clrs.RED}{artist}{clrs.ENDC}')
             if not os.path.exists(SORTEDDIR + artist):
                 os.makedirs(SORTEDDIR + artist)
         else:
-            print('\nWARNING - Artist tag not found\n')
+            print('\n{clrs.WARNING}WARNING: Artist tag not found{clrs.ENDC}\n')
             continue
         if audiofile.tag.album is not None:
             album = audiofile.tag.album
-            print('Album - ' + album + '\n')
+            print('Album - ' + f'{clrs.RED}{album}{clrs.ENDC}' + '\n')
             new_dir = Path(SORTEDDIR + artist + '/' + album + '/')
             new_fpath = new_dir / os.path.basename(file)
             if not os.path.exists(new_dir):
@@ -70,7 +68,7 @@ for file in full_paths:
             shutil.copyfile(file, new_fpath)
             path_dct[(artist, album)] = [Path(file).parent, new_dir]
         else:
-            print('\nWARNING - Album tag not found\n.')
+            print(f'\n{clrs.WARNING}WARNING: Album tag not found{clrs.ENDC}\n')
             continue
 
 if KEEP:
@@ -80,8 +78,8 @@ if KEEP:
             misc_dir = Path(file).parent
             for dir in path_dct.values():
                 if misc_dir == dir[0]:
-                    new_fpath = dir[1] / os.path.basename(file)
+                    to_copy = os.path.basename(file)
+                    new_fpath = dir[1] / to_copy
                     shutil.copyfile(file, new_fpath)
-                    print('\nCopied ', os.path.basename(file),
+                    print('\nCopied ', f'{clrs.RED}{to_copy}{clrs.ENDC}',
                         'to ', new_fpath)
-
