@@ -6,8 +6,16 @@ import shutil
 from pathlib import Path
 from io import StringIO
 
-USERDIR = '/media/daniel/volume-exFa/Musica/Unsorted/complete/'
-SORTEDDIR = '/media/daniel/volume-exFa/Musica/Sorted/'
+"""
+if using wsl2:
+sudo mount -t drvfs E: /home/diazdc/external-volume/
+
+volume-exFa
+external-volume
+"""
+
+USERDIR = '/media/daniel/external-volume/Musica/Unsorted/complete/'
+SORTEDDIR = '/media/daniel/external-volume/Musica/Sorted/'
 KEEP = True
 
 class clrs:
@@ -65,7 +73,12 @@ for file in full_paths:
             new_fpath = new_dir / os.path.basename(file)
             if not os.path.exists(new_dir):
                 os.makedirs(new_dir)
-            shutil.copyfile(file, new_fpath)
+            else:
+                print('Path exists')
+            if os.path.exists(new_fpath):
+                print(f'{clrs.WARNING}Skipping, file exists{clrs.ENDC}')
+            else:
+                shutil.copyfile(file, new_fpath)
             path_dct[(artist, album)] = [Path(file).parent, new_dir]
         else:
             print(f'\n{clrs.WARNING}WARNING: Album tag not found{clrs.ENDC}\n')
