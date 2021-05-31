@@ -9,9 +9,7 @@ from io import StringIO
 """
 if using wsl2:
 sudo mount -t drvfs E: /home/diazdc/external-volume/
-
-volume-exFa
-external-volume
+make sure you copy absolute paths from vscode sidebar
 """
 
 USERDIR = '/home/diazdc/external-volume/Musica/Unsorted/complete/'
@@ -84,8 +82,8 @@ for file in full_paths:
                 print(f'{clrs.WARNING}Skipping{clrs.ENDC}, file exists \n',
                     f'{print_song}\n')
             else:
-                print(f'{clrs.CYAN}Copying{clrs.ENDC} \n',
-                 f'{print_artist}\n{print_album}\n{print_song}\n')
+                print(f'{clrs.CYAN}Copying{clrs.ENDC}\n',
+                 f'{print_artist}\n {print_album} {print_song}\n')
                 shutil.copyfile(file, new_fpath)
             path_dct[(artist, album)] = [Path(file).parent, new_dir]
         else:
@@ -102,5 +100,5 @@ if KEEP:
                     to_copy = os.path.basename(file)
                     new_fpath = dir[1] / to_copy
                     shutil.copyfile(file, new_fpath)
-                    print('\nCopied ', f'{clrs.RED}{to_copy}{clrs.ENDC}',
-                        'to ', new_fpath)
+                    print('\nCopied', f'{clrs.RED}{to_copy}{clrs.ENDC}',
+                        'to', new_fpath)
