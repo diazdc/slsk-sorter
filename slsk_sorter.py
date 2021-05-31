@@ -14,8 +14,8 @@ volume-exFa
 external-volume
 """
 
-USERDIR = '/media/daniel/external-volume/Musica/Unsorted/complete/'
-SORTEDDIR = '/media/daniel/external-volume/Musica/Sorted/'
+USERDIR = '/home/diazdc/external-volume/Musica/Unsorted/complete/'
+SORTEDDIR = '/home/diazdc/external-volume/Musica/Sorted/'
 KEEP = True
 
 class clrs:
@@ -43,6 +43,12 @@ def flatten_list(var):
      flat_list = [item for sublist in var for item in sublist]
      return flat_list
 
+if not os.path.exists(USERDIR):
+    print(f'{clrs.RED}ERROR{clrs.ENDC}: User download directory doesn\'t exist')
+
+if not os.path.exists(SORTEDDIR):
+    print(f'{clrs.RED}ERROR{clrs.ENDC}: User sorted directory doesn\'t exist')
+
 full_paths = []
 path_nfo = {}
 for root, dirs, files in os.walk(USERDIR, topdown=True):
@@ -56,11 +62,12 @@ path_dct = {}
 for file in full_paths:
     ext = os.path.splitext(file)[1]
     if ext and ext == '.mp3':
+        print_song = f'Song - {clrs.RED}{os.path.basename(file)}{clrs.ENDC}'
         with capturing() as output:
             audiofile = eyed3.load(file)
         if audiofile.tag.artist is not None:
             artist = audiofile.tag.artist
-            print('Artist - ' + f'{clrs.RED}{artist}{clrs.ENDC}')
+            print_artist = 'Artist - ' + f'{clrs.RED}{artist}{clrs.ENDC}'
             if not os.path.exists(SORTEDDIR + artist):
                 os.makedirs(SORTEDDIR + artist)
         else:
@@ -68,16 +75,17 @@ for file in full_paths:
             continue
         if audiofile.tag.album is not None:
             album = audiofile.tag.album
-            print('Album - ' + f'{clrs.RED}{album}{clrs.ENDC}' + '\n')
+            print_album = 'Album - ' + f'{clrs.RED}{album}{clrs.ENDC}' + '\n'
             new_dir = Path(SORTEDDIR + artist + '/' + album + '/')
             new_fpath = new_dir / os.path.basename(file)
             if not os.path.exists(new_dir):
                 os.makedirs(new_dir)
-            else:
-                print('Path exists')
             if os.path.exists(new_fpath):
-                print(f'{clrs.WARNING}Skipping, file exists{clrs.ENDC}')
+                print(f'{clrs.WARNING}Skipping{clrs.ENDC}, file exists \n',
+                    f'{print_song}\n')
             else:
+                print(f'{clrs.CYAN}Copying{clrs.ENDC} \n',
+                 f'{print_artist}\n{print_album}\n{print_song}\n')
                 shutil.copyfile(file, new_fpath)
             path_dct[(artist, album)] = [Path(file).parent, new_dir]
         else:
